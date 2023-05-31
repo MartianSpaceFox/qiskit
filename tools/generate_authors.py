@@ -80,7 +80,7 @@ def main(repos=None, output_path=None):
                 continue
             author = author.strip()
             email = email[:-1].strip()
-            mailmap_contact = '<' + email + '>'
+            mailmap_contact = f'<{email}>'
             mailmap_out = _run_shell_command(['git', 'check-mailmap', mailmap_contact],
                                              git_dir)
             if mailmap_out != mailmap_contact:

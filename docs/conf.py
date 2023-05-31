@@ -133,22 +133,34 @@ redirects = {
 }
 
 for tutorial in optimization_tutorials:
-    redirects['tutorials/optimization/%s' % tutorial] =  "https://qiskit.org/documentation/optimization/tutorials/index.html"
+    redirects[
+        f'tutorials/optimization/{tutorial}'
+    ] = "https://qiskit.org/documentation/optimization/tutorials/index.html"
 
 for tutorial in finance_tutorials:
-    redirects['tutorials/finance/%s' % tutorial] = "https://qiskit.org/documentation/finance/tutorials/index.html"
+    redirects[
+        f'tutorials/finance/{tutorial}'
+    ] = "https://qiskit.org/documentation/finance/tutorials/index.html"
 
 for tutorial in chemistry_tutorials:
-    redirects["tutorials/chemistry/%s" % tutorial] = "https://qiskit.org/documentation/nature/tutorials/index.html"
+    redirects[
+        f"tutorials/chemistry/{tutorial}"
+    ] = "https://qiskit.org/documentation/nature/tutorials/index.html"
 
 for tutorial in ml_tutorials:
-    redirects["tutorials/machine_learning/%s" % tutorial] = "https://qiskit.org/documentation/machine-learning/tutorials/index.html"
+    redirects[
+        f"tutorials/machine_learning/{tutorial}"
+    ] = "https://qiskit.org/documentation/machine-learning/tutorials/index.html"
 
 for tutorial in dynamics_tutorials:
-    redirects["tutorials/circuits_advanced/%s" % tutorial] = "https://qiskit.org/documentation/dynamics/tutorials/index.html"
+    redirects[
+        f"tutorials/circuits_advanced/{tutorial}"
+    ] = "https://qiskit.org/documentation/dynamics/tutorials/index.html"
 
 for tutorial in experiments_tutorials:
-    redirects["tutorials/noise/%s" % tutorial] = "https://qiskit.org/documentation/experiments/tutorials/index.html"
+    redirects[
+        f"tutorials/noise/{tutorial}"
+    ] = "https://qiskit.org/documentation/experiments/tutorials/index.html"
 
 with open("aer_sources.txt", "r") as fd:
     for source_str in fd:
@@ -277,8 +289,7 @@ def _get_current_versions(app):
         setup_py = fd.read()
         for package in qiskit_elements:
             version_regex = re.compile(package + '[=|>]=(.*)\"')
-            match = version_regex.search(setup_py)
-            if match:
+            if match := version_regex.search(setup_py):
                 ver = match[1]
                 versions[package] = ver
     return versions
@@ -286,7 +297,7 @@ def _get_current_versions(app):
 
 def _install_from_master():
     for package in qiskit_elements + ['qiskit-ignis']:
-        github_url = 'git+https://github.com/Qiskit/%s' % package
+        github_url = f'git+https://github.com/Qiskit/{package}'
         cmd = [sys.executable, '-m', 'pip', 'install', '-U', github_url]
         subprocess.run(cmd)
 
@@ -294,7 +305,7 @@ def _install_from_master():
 def _git_copy(package, sha1, api_docs_dir):
     try:
         with tempfile.TemporaryDirectory() as temp_dir:
-            github_source = 'https://github.com/Qiskit/%s' % package
+            github_source = f'https://github.com/Qiskit/{package}'
             subprocess.run(['git', 'clone', github_source, temp_dir],
                            capture_output=True)
             subprocess.run(['git', 'checkout', sha1], cwd=temp_dir,
@@ -304,8 +315,10 @@ def _git_copy(package, sha1, api_docs_dir):
                 api_docs_dir)
 
     except FileNotFoundError:
-        warnings.warn('Copy from git failed for %s at %s, skipping...' %
-                      (package, sha1), RuntimeWarning)
+        warnings.warn(
+            f'Copy from git failed for {package} at {sha1}, skipping...',
+            RuntimeWarning,
+        )
 
 
 def load_api_sources(app):
@@ -338,8 +351,10 @@ def load_tutorials(app):
                 os.path.join(temp_dir, 'tutorials'),
                 tutorials_dir)
     except FileNotFoundError:
-        warnings.warn('Copy from git failed for %s at %s, skipping...' %
-                      (package, sha1), RuntimeWarning)
+        warnings.warn(
+            f'Copy from git failed for {package} at {sha1}, skipping...',
+            RuntimeWarning,
+        )
 
 
 def clean_api_source(app, exc):
